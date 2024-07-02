@@ -20,6 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@liaoliaots/nestjs-redis": "^9.0.5",
+    "@nestjs-modules/ioredis": "^2.0.2",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.0",
@@ -31,6 +33,7 @@
     "@nestjs/typeorm": "^10.0.2",
     "axios": "^1.6.7",
     "hbs": "^4.2.0",
+    "ioredis": "^5.4.1",
     "mysql2": "^3.9.2",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
