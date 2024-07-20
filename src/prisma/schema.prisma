@@ -1,0 +1,15 @@
+datasource db {
+  provider = "mysql" 
+  url      = "mysql://root:9RW7bpEomMzPbPqsxAVv6Zgh@apo.liara.cloud:30842/ecstatic_margulis"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Student {
+  id               Int    @id @default(autoincrement())
+  name             String
+  studentId        String @unique
+  telegramChatId   String @unique
+}
