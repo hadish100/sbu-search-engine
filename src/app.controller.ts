@@ -15,10 +15,7 @@ export class app_controller
   @Get('test')
   async test()
   {
-    await this.app_service.set_key("test0","test1");
-    return "test";
+    return await this.app_service.get_all_students();
   }
-
-
 
 }

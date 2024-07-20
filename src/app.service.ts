@@ -1,16 +1,27 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRedis } from '@nestjs-modules/ioredis';
+import { PrismaClient } from '@prisma/client';
 import Redis from 'ioredis';
 
 @Injectable()
-export class app_service 
+export class app_service extends PrismaClient implements OnModuleInit, OnModuleDestroy
 {
   constructor
   (
     private readonly config_service: ConfigService,
     @InjectRedis() private readonly redis: Redis,
-  ) {}
+  ) {super()}
+
+  async onModuleInit() 
+  {
+    await this.$connect();
+  }
+
+  async onModuleDestroy() 
+  {
+    await this.$disconnect();
+  }
 
   uid() : number
   {
@@ -32,5 +43,9 @@ export class app_service
     return await this.redis.get(key);
   }
 
+  async get_all_students()
+  {
+      return await this.student.findMany();
+  }
 
 }
