@@ -17,7 +17,7 @@ import { RedisModule } from '@nestjs-modules/ioredis';
     RedisModule.forRoot
     ({
       type: 'single',
-      url:"redis://root:mahdi2020@65.109.186.13:6379",
+      url:"redis://:vwMXVGWuKSmispzx83ogKyls@apo.liara.cloud:32577/0",
     }),
 ],
 

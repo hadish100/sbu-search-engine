@@ -11,5 +11,5 @@ model Student {
   id               Int    @id @default(autoincrement())
   name             String
   studentId        String @unique
-  telegramChatId   String @unique
+  telegramChatId   String? @unique
 }
