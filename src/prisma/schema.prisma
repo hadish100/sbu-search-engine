@@ -8,8 +8,20 @@ generator client {
 }
 
 model Student {
-  id               Int    @id @default(autoincrement())
-  name             String
-  studentId        String @unique
-  telegramChatId   String? @unique
+  id            Int           @id @default(autoincrement())
+  name          String
+  studentId     String        @unique
+  partnershipsA Partnership[] @relation("PartnershipA")
+  partnershipsB Partnership[] @relation("PartnershipB")
 }
+
+model Partnership {
+  id           Int     @id @default(autoincrement())
+  studentA     Student @relation("PartnershipA", fields: [studentAId], references: [id])
+  studentAId   Int
+  studentB     Student @relation("PartnershipB", fields: [studentBId], references: [id])
+  studentBId   Int
+
+  @@unique([studentAId, studentBId])
+}
+

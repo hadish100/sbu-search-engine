@@ -20,9 +20,9 @@ export class app_service extends PrismaClient implements OnModuleInit, OnModuleD
     console.log(">>> connecting to database");
     await this.$connect();
     console.log(">>> initializing prisma data");
-    await this.init_prisma_data();
+    // await this.init_prisma_data();
     console.log(">>> initializing redis cache");
-    await this.init_redis_cache();
+    // await this.init_redis_cache();
     console.log(">>> app service is ready");
   }
 
@@ -62,9 +62,58 @@ export class app_service extends PrismaClient implements OnModuleInit, OnModuleD
     ({
       data: data.map(student => 
       {
-        return {name: student.name, studentId: student.student_id, telegramChatId: student.telegram_chat_id}
+        return {name: student.name, studentId: student.student_id}
       })
     });
+
+    const allStudents = await this.student.findMany({
+      where: 
+      {
+        studentId: 
+        {
+          in: data.map(student => student.student_id),
+        },
+      },
+      select: 
+      {
+        id: true,
+        studentId: true,
+      },
+    });
+
+    const studentIdMap = allStudents.reduce((map, student) => 
+    {
+      map[student.studentId] = student.id;
+      return map;
+    }, {});
+    
+    const partnerships = [];
+    data.forEach(student => 
+    {
+      if(!student.partners) return;
+      student.partners.forEach(partnerId => {
+        const studentAId = studentIdMap[student.student_id];
+        const studentBId = studentIdMap[partnerId];
+    
+        if (studentAId && studentBId && !partnerships.find(p => p.studentAId === studentBId && p.studentBId === studentAId)) 
+        {
+          partnerships.push
+          ({
+            studentAId,
+            studentBId,
+          });
+        }
+      });
+    });
+    
+    await this.partnership.createMany
+    ({
+      data: partnerships,
+      skipDuplicates: true,
+    });
+
+
+
   }
 
   async init_redis_cache() : Promise<void>
@@ -128,5 +177,31 @@ export class app_service extends PrismaClient implements OnModuleInit, OnModuleD
 
     return student;
   }
+
+
+  async test()
+  {
+    return await this.student.findMany({
+      where: {
+        OR: [
+          {
+            partnershipsA: {
+              some: {},
+            },
+          },
+          {
+            partnershipsB: {
+              some: {},
+            },
+          },
+        ],
+      },
+      include: {
+        partnershipsA: true,
+        partnershipsB: true,
+      },
+    })
+  }
+
 
 }

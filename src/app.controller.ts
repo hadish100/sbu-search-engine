@@ -29,4 +29,10 @@ export class app_controller
     return await this.app_service.get_student_profile(id);
   }
 
+  @Get('test')
+  async test()
+  {
+    return await this.app_service.test();
+  }
+
 }
