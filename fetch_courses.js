@@ -30,18 +30,28 @@ async function main()
         form_data.append('username', username);
         var course_request = await axios.post("https://vu.sbu.ac.ir/class/course.list.php", form_data);
         var courses = course_request.data.match(/<li  class="list-group-item" >([\s\S]*?)<\/li>/g);
-        courses = courses.map(c=>c.replace(/<a.*?>(.*?)<\/a>/g, "$1"));
-        courses = courses.map(c=>c.replace(/<\/?li.*?>/g, ""));
-        courses = courses.map(c=>c.replace(/\(.*?\)/g, ""));
-        courses = courses.map(c=>c.replace(/\n/g, ""));
-        courses = courses.map(c=>c.replace(/\r/g, ""));
-        courses = courses.map(c=>c.replace(/\t/g, ""));
-        courses = courses.map(c=>c.replace(/ي/g, "ی"));
-        courses = courses.map(c=>c.replace(/ك/g, "ک"));
-        var persian_numbers = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
-        var english_numbers = ["0","1","2","3","4","5","6","7","8","9"];
-        courses = courses.map(c=>c.split("").map(l=>english_numbers.includes(l)?persian_numbers[english_numbers.indexOf(l)]:l).join(""));
-        courses = courses.map(c=>c.trim());
+        
+        if(!courses)
+        {
+            courses = [];
+        }
+
+        else
+        {
+            courses = courses.map(c=>c.replace(/<a.*?>(.*?)<\/a>/g, "$1"));
+            courses = courses.map(c=>c.replace(/<\/?li.*?>/g, ""));
+            courses = courses.map(c=>c.replace(/\(.*?\)/g, ""));
+            courses = courses.map(c=>c.replace(/\n/g, ""));
+            courses = courses.map(c=>c.replace(/\r/g, ""));
+            courses = courses.map(c=>c.replace(/\t/g, ""));
+            courses = courses.map(c=>c.replace(/ي/g, "ی"));
+            courses = courses.map(c=>c.replace(/ك/g, "ک"));
+            var persian_numbers = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
+            var english_numbers = ["0","1","2","3","4","5","6","7","8","9"];
+            courses = courses.map(c=>c.split("").map(l=>english_numbers.includes(l)?persian_numbers[english_numbers.indexOf(l)]:l).join(""));
+            courses = courses.map(c=>c.trim());
+        }
+
 
         var courses_json = await fs.readFile('courses.json', 'utf8');
         courses_json = JSON.parse(courses_json);
